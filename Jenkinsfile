@@ -6,7 +6,7 @@ pipeline {
 
         stage('Performing Lint Checks') {
             steps {
-                scripts {
+                script {
                     sample.info('SharedLibrary', 'stage.google.com')
                 }
                    sh "echo installing jslint"
