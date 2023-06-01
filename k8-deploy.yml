@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart
+  labels:
+    app: cart
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cart
+  template:
+    metadata:
+      labels:
+        app: cart
+    spec:
+      containers:
+      - name: cart
+        image: 834725375088.dkr.ecr.us-east-1.amazonaws.com/cart:8.0.0
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: cart-configmap
+
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: cart-svc
+spec:
+  selector:
+   app: cart
+  ports:
+    - protocol: TCP
+      port: 8080              # Port number of the service that it has to listen on 
+      targetPort: 8080        # Port number of the container that it has to forward to
+
+--- 
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cart-configmap
+data:
+  CATALOGUE_HOST: "catalogue-svc"  
+  REDIS_HOST: "robot-dev-redis.ij0ide.0001.use1.cache.amazonaws.com"
